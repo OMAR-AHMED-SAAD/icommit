@@ -3,6 +3,7 @@
 Icommit is a simple command-line tool to generate commit messages for Git repositories. It analyzes the staged changes in your files and generates meaningful commit messages using Groq’s AI-powered Llama models.
 
 ![](https://img.shields.io/badge/Icommit-8A2BE2)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/icommit)
 
 ## Features
 
