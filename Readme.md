@@ -133,7 +133,7 @@ The API now supports secure user login with JWT authentication.
 
 ## Release Notes
 
-For details on the latest releases, see the [Releases Notes](./ReleaseNotes.md) here.
+For details on the latest releases, see the [Releases Notes](./Releasenotes.md) here.
 
 ## License
 
