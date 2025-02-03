@@ -13,6 +13,16 @@ COMMANDS = {"is_git_repo": ["git", "rev-parse", "--git-dir"],
 
 MODEL = "llama3-8b-8192"
 
+def clean_commit_message(commit_message: str) -> str:
+    """
+    Clean the commit message by removing any trailing whitespace and newlines or invalid ai generated text
+    Parameters:
+        commit_message (str): The commit message to clean
+    Returns:
+        str: The cleaned commit message
+    """
+    commit_message = commit_message.replace("Here is the generated commit message:", " ")
+    return commit_message.strip()
 
 def generate_commit_message(staged_changes: str) -> str:
     """
@@ -52,7 +62,7 @@ def generate_commit_message(staged_changes: str) -> str:
             if content:
                 print(content, end="", flush=True)
                 commit_msg += content
-
+        commit_msg = clean_commit_message(commit_msg)
         return commit_msg
     except Exception as e:
         # print("❗️ Error generating commit message check api logs for rate limiting or token limit exception")
