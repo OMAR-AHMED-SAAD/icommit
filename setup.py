@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='icommit',
-    version='0.1.0',
+    version='0.2.1',
     description='A CLI tool to generate commit messages from your code changes',
     # package_dir={'app': 'app'},
     packages=find_packages(),

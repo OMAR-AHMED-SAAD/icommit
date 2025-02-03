@@ -1,17 +1,32 @@
-# ICOMMIT
+[![Icommit](https://i.postimg.cc/02bFw0zk/temp-Image3-LGD2m.avif)](https://postimg.cc/kBPTr8Nz)
+---
+## ICOMMIT - AI-Driven Git Commit Messages
 
-Icommit is a simple command-line tool to generate commit messages for Git repositories. It analyzes the staged changes in your files and generates meaningful commit messages using Groq’s AI-powered Llama models.
+**Icommit** is a simple command-line tool that generates meaningful commit messages for your Git repositories. By analyzing staged changes, it leverages Groq’s AI-powered Llama models to produce high-quality messages.
 
-![](https://img.shields.io/badge/Icommit-8A2BE2)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/icommit)
+![Icommit Badge](https://img.shields.io/badge/Icommit-8A2BE2) ![PyPI - Downloads](https://img.shields.io/pypi/dm/icommit)
+
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+  - [Install Icommit](#install-icommit)
+  - [Set Up the API Key](#set-up-the-api-key)
+- [Usage](#usage)
+  - [Generating Commit Messages](#generating-commit-messages)
+  - [CLI Commands](#cli-commands)
+- [Configuration](#configuration)
+- [Example Usage](#example-usage)
+- [Troubleshooting](#troubleshooting)
+- [Release Notes](#release-notes)
+- [License](#license)
 
 ## Features
 
-- Generates commit messages for staged Git changes
+- Generates AI-driven commit messages from staged Git changes
 - Uses Groq’s AI model to analyze code diffs
-- Easy setup and integration with Git workflow
+- Easy Git integration with minimal setup
+- Secure API key handling (no environment variables)
 - Simple CLI commands for quick use
-- Secure, non-environment-based API key handling
 
 ## Installation
 
@@ -32,16 +47,14 @@ To use the AI-powered commit message generation, you need to configure your API 
 1. Visit [Groq Console](https://console.groq.com/) and create an account.
 2. Generate a new API key and copy it.
 3. Run the following command to store your API key:
-
 ```bash
 icommit-key <api-key>
 ```
-
-This will save the API key to a configuration file on your local system, ensuring it is kept secure and used only for your Icommit requests.
+This securely saves your API key in a local configuration file.
 
 ## Usage
 
-### Generating a Commit Message
+### Generating Commit Messages
 
 Once you’ve set up the API key, you can generate commit messages based on your staged changes in any Git repository.
 
@@ -112,12 +125,15 @@ feat(api): add user authentication endpoint
 
 The API now supports secure user login with JWT authentication.
 ```
-
 ## Troubleshooting
 
 - If the API key is missing or invalid, you’ll be prompted to set it using the `icommit-key` command before generating commit messages.
 - Ensure that you have staged changes using `git add` before running the `icommit` command.
 - If the tool doesn’t seem to work as expected, check the configuration file for your API key, or reset it by running `icommit-key <new-api-key>`.
+
+## Release Notes
+
+For details on the latest releases, see the [Releases Notes](./ReleaseNotes.md) here.
 
 ## License
 
