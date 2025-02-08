@@ -1,7 +1,9 @@
 import os
 import sys
+from colorama import Fore, Style, init
 
 CONFIG_PATH = os.path.expanduser("~/.icommit_config")
+init(autoreset=True)
 
 def set_api_key():
     if len(sys.argv) != 2:
@@ -10,7 +12,7 @@ def set_api_key():
     api_key = sys.argv[1]
     with open(CONFIG_PATH, "w") as f:
         f.write(api_key)
-    print("API key saved successfully!")
+    print(Fore.GREEN + Style.BRIGHT + "API key saved successfully")
 
 
 def get_api_key():
