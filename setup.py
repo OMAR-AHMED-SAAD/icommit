@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='icommit',
-    version='0.2.1',
+    version='0.3.0',
     description='A CLI tool to generate commit messages from your code changes',
     # package_dir={'app': 'app'},
     packages=find_packages(),
@@ -26,6 +26,8 @@ setup(
     install_requires=[
         'groq >= 0.15.0',
         'pyperclip >= 1.9.0',
+        'colorama >= 0.4.6',
+        'ollama >= 0.4.8',
     ],
     extras_require={
         "dev": ["twine >= 6.1.0"]
@@ -34,7 +36,7 @@ setup(
      entry_points={
         'console_scripts': [
             'icommit=app.app:run',  
-            'icommit-key=app.api_key:set_api_key',  
+            'icommit-key=app.groq_api_key:set_api_key',  
         ],
     },
 )

@@ -1,5 +1,11 @@
 # Release Notes
 
+## [v0.3.0] - 2025-05-29
+### Added
+- Added ollama support for commit messages
+- Changed the styling and colors of the CLI output
+- Refactored the codebase for better performance and readability
+
 ## [v0.2.1] - 2025-02-03
 ### Added
 - added release notes
