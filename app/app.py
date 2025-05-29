@@ -2,73 +2,46 @@ import os
 import sys
 import subprocess
 import pyperclip
-from groq import Groq
-from .system_prompt import COMMIT_PROMPT
-from .api_key import get_api_key
+from .groq_generator import GroqGenerator
+from .ollama_generator import OllamaGenerator
+from colorama import Fore, Style, init
+
+init(autoreset=True)
 
 COMMANDS = {"is_git_repo": ["git", "rev-parse", "--git-dir"],
             "clear_screen": ["cls" if os.name == "nt" else "clear"],
             "commit": ["git", "commit", "-m"],
             "get_stashed_changes": ["git", "diff", "--cached"]}
 
-MODEL = "llama3-8b-8192"
-
-def clean_commit_message(commit_message: str) -> str:
-    """
-    Clean the commit message by removing any trailing whitespace and newlines or invalid ai generated text
-    Parameters:
-        commit_message (str): The commit message to clean
-    Returns:
-        str: The cleaned commit message
-    """
-    commit_message = commit_message.replace("Here is the generated commit message:", " ")
-    return commit_message.strip()
 
 def generate_commit_message(staged_changes: str) -> str:
     """
-    Generate a commit message based on the staged changes using the Groq API and copy the diff to clipboard on failure
+    Generate a commit message based on the staged changes using the Groq API or Ollama.
     Parameters:
         staged_changes (str): The staged changes to commit
-    Returns:
-        str: The generated commit message
     """
     try:
-        client = Groq(api_key=get_api_key())
-        stream = client.chat.completions.create(
-
-            messages=[
-                {
-                    "role": "system",
-                    "content": COMMIT_PROMPT
-                },
-                {
-                    "role": "user",
-                    "content": f"Here is the diff for the staged changes:\n{staged_changes}"
-                }
-            ],
-
-            model=MODEL,
-            temperature=0.5,
-            max_completion_tokens=1024,
-            top_p=1,
-            stop=None,
-            stream=True,
-        )
-        print("🤖 Generating commit message...")
-        print("-" * 50 + "\n")
-        commit_msg = ""
-        for chunk in stream:
-            content = chunk.choices[0].delta.content
-            if content:
-                print(content, end="", flush=True)
-                commit_msg += content
-        commit_msg = clean_commit_message(commit_msg)
-        return commit_msg
+        llm = None
+        action = input(
+            "\nChoose the model to generate the commit message [o(ollama local) | g(groq online)]: "
+        ).lower()
+        match action.lower():
+            case "o" | "ollama":
+                llm = OllamaGenerator()
+                llm.set_model()
+            case "g" | "groq":
+                llm = GroqGenerator()
+            case _:
+                print(Fore.RED + Style.BRIGHT + "\n Invalid input. Exiting...")
+                sys.exit(1)
+        return llm.generate_commit_message("Generating", staged_changes), llm
     except Exception as e:
-        # print("❗️ Error generating commit message check api logs for rate limiting or token limit exception")
-        print(f"❗️ Error generating commit message \n${e}")
+        print(Fore.RED + Style.BRIGHT +
+              f" Error generating commit message \n${e}")
         pyperclip.copy(staged_changes)
-        print("📋 Staged changes copied to clipboard instead to use with external hosted models")
+        print(
+            "📋 Staged changes copied to clipboard instead to use with external hosted models"
+        )
         sys.exit(1)
 
 
@@ -78,24 +51,26 @@ def interaction_loop(staged_changes: str):
     Parameters:
         staged_changes (str): The staged changes to commit
     """
-    while True:
-        commit_msg = generate_commit_message(staged_changes)
-        action = input(
+    commit_msg,llm = generate_commit_message(staged_changes)
+    action = input(
             "\n\nProceed with commit? [y(yes) | n(no) | r(regenerate)]: ").lower()
-        match action:
-            case "y":
+    while True:
+        match action.lower():
+            case "y" | "yes":
                 print("\n🚀 Committing changes...")
                 run_command(COMMANDS["commit"] + [commit_msg])
                 break
-            case "n":
+            case "n" | "no":
                 print("\n👋 Exiting...")
                 sys.exit(0)
-            case "r":
-                subprocess.run(COMMANDS["clear_screen"])
-                continue
+            case "r" | "regenerate":
+                pass
             case _:
-                print("\n❗️ Invalid input. Exiting...")
+                print(Fore.RED + Style.BRIGHT +"\n Invalid input. Exiting...")
                 break
+        commit_msg = llm.generate_commit_message("Regenerating", staged_changes)
+        action = input(
+            "\n\nProceed with commit? [y(yes) | n(no) | r(regenerate)]: ").lower()
 
 
 def run_command(command: list[str] | str):
@@ -114,7 +89,7 @@ def run_command(command: list[str] | str):
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"❗️ Error: \n {e.stderr}")
+        print(Fore.RED + Style.BRIGHT + f" Error: \n {e.stderr}")
         sys.exit(1)
 
 
@@ -130,7 +105,7 @@ def run():
         interaction_loop(staged_changes)
 
     except KeyboardInterrupt:
-        print("\n👋 Exiting...")
+        print("\n Exiting...")
         sys.exit(0)
 
 
